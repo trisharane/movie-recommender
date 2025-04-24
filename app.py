@@ -3,6 +3,9 @@ import streamlit as st
 import gdown
 import requests
 
+# Set layout BEFORE any other Streamlit command
+st.set_page_config(layout="wide")
+
 @st.cache_data
 def load_pickle_from_gdrive(file_id):
     url = f"https://drive.google.com/uc?id={file_id}"
