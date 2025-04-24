@@ -1,11 +1,12 @@
 import pickle
-import streamlit as st
 import gdown
 import requests
+import streamlit as st
 
-# Set layout BEFORE any other Streamlit command
+# ---- Must come before any other Streamlit command ----
 st.set_page_config(layout="wide")
 
+# ---- Load pickles from Google Drive ----
 @st.cache_data
 def load_pickle_from_gdrive(file_id):
     url = f"https://drive.google.com/uc?id={file_id}"
@@ -47,21 +48,19 @@ def recommend(movie):
         recommended_movie_names.append(movies.iloc[i[0]].title)
     return recommended_movie_names, recommended_movie_posters
 
-# ---- Streamlit UI Setup ----
-st.set_page_config(layout="wide")
+# ---- Streamlit UI ----
 st.markdown("<h1 style='text-align: center; color: #1f77b4;'>🎬 Movie Recommender System</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center;'>Discover movies similar to your favorites</p>", unsafe_allow_html=True)
 
-# ---- Movie Dropdown ----
+# ---- Dropdown ----
 movie_list = movies['title'].values
 st.markdown("<br>", unsafe_allow_html=True)
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     selected_movie = st.selectbox("🎞️ Select a movie to get recommendations:", movie_list)
 
-st.markdown("<br>", unsafe_allow_html=True)
-
 # ---- Show Recommendations ----
+st.markdown("<br>", unsafe_allow_html=True)
 if st.button('🎥 Show Recommendations'):
     with st.spinner('Finding similar movies...'):
         names, posters = recommend(selected_movie)
@@ -70,7 +69,4 @@ if st.button('🎥 Show Recommendations'):
         for idx, col in enumerate(cols):
             with col:
                 st.image(posters[idx], use_container_width=True)
-                st.markdown(
-                    f"<h4 style='text-align: center; font-size:16px'>{names[idx]}</h4>",
-                    unsafe_allow_html=True
-                )
+                st.markdown(f"<h4 style='text-align: center; font-size:16px'>{names[idx]}</h4>", unsafe_allow_html=True)
