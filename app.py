@@ -1,18 +1,23 @@
 import pickle
 import streamlit as st
+import gdown
 import requests
 
-# ---- Load pickles from Google Drive ----
 @st.cache_data
-def load_pickle_from_url(url):
-    response = requests.get(url)
-    return pickle.loads(response.content)
+def load_pickle_from_gdrive(file_id):
+    url = f"https://drive.google.com/uc?id={file_id}"
+    output = f"/tmp/{file_id}.pkl"
+    gdown.download(url, output, quiet=False)
+    with open(output, 'rb') as f:
+        return pickle.load(f)
 
-MOVIE_LIST_URL = "https://drive.google.com/uc?export=download&id=1DIUzzePQPOyJuez8RiMxNLFl45x39SBb"
-SIMILARITY_URL = "https://drive.google.com/uc?export=download&id=1ON73LlLx3y2p9nTmfQlN5heo03ft31pl"
+# Your file IDs
+MOVIE_LIST_ID = "1DIUzzePQPOyJuez8RiMxNLFl45x39SBb"
+SIMILARITY_ID = "1ON73LlLx3y2p9nTmfQlN5heo03ft31pl"
 
-movies = load_pickle_from_url(MOVIE_LIST_URL)
-similarity = load_pickle_from_url(SIMILARITY_URL)
+# Load pickles
+movies = load_pickle_from_gdrive(MOVIE_LIST_ID)
+similarity = load_pickle_from_gdrive(SIMILARITY_ID)
 
 # ---- Function to fetch movie poster ----
 @st.cache_data
